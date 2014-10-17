@@ -7,9 +7,11 @@ void setup(){
 }
 
 void loop(){
+  //reads the analog input and prints it out in the serial monitor
   int keyVal = analogRead(A0);
   Serial.println(keyVal);
-  
+
+//uses else if function to determine which note is played for each button  
   if (keyVal == 1023){
     tone(8, notes[0]);
   }
