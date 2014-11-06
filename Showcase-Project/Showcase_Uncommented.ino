@@ -41,22 +41,34 @@ void loop() {
   forwardSwitchState = digitalRead(forwardSwitchPin);
   reverseSwitchState = digitalRead(reverseSwitchPin);
   potVal = analogRead(potPin);
-
+  
   motorSpeed = potVal / 4;
   
+  /* motor Direction detection, checks for direction 
+   * and sets a variable to fwd or bck. That variable
+   * is passed to the printLCD function.
+   */
+  
+  String motorDirectionText;
+  if (motorDirection == 1) {
+    motorDirectionText = "Fwd: ";
+  }
+  else if (motorDirection == 0) {
+    motorDirectionText = "Bck: ";
+  }
   
   if (forwardSwitchState != prevForwardSwitchState) {
     if (forwardSwitchState == HIGH) {
       motorDirection = 1;
       motorEnabled = 1;
       digitalWrite(activeLEDPin, HIGH);
-      printLCD(motorSpeed, prevMotorSpeed);
+      printLCD(motorSpeed, prevMotorSpeed, motorDirectionText);
     }
     else if (forwardSwitchState == LOW) {
       digitalWrite(activeLEDPin, LOW);
       motorEnabled = 0;
       motorSpeed = 0;
-      printLCD(motorSpeed, prevMotorSpeed);
+      printLCD(motorSpeed, prevMotorSpeed, motorDirectionText);
     }
   }  
   else if (reverseSwitchState != prevReverseSwitchState) {
@@ -64,34 +76,36 @@ void loop() {
       motorDirection = 0;
       motorEnabled = 1;
       digitalWrite(activeLEDPin, HIGH);
-      printLCD(motorSpeed, prevMotorSpeed);
+      printLCD(motorSpeed, prevMotorSpeed, motorDirectionText);
     }
     else if (reverseSwitchState == LOW) {
       motorEnabled = 0;
       digitalWrite(activeLEDPin, LOW);      
       motorSpeed = 0;
-      printLCD(motorSpeed, prevMotorSpeed);
+      printLCD(motorSpeed, prevMotorSpeed, motorDirectionText);
     }
   }
   if (forwardSwitchState == prevForwardSwitchState) {
     if (forwardSwitchState == HIGH) {
-      printLCD(motorSpeed, prevMotorSpeed);
+      printLCD(motorSpeed, prevMotorSpeed, motorDirectionText);
     }
   }
   if (reverseSwitchState == prevReverseSwitchState) {
     if (reverseSwitchState == HIGH) {
-      printLCD(motorSpeed, prevMotorSpeed);
+      printLCD(motorSpeed, prevMotorSpeed, motorDirectionText);
     }
   }
-  
   if (motorDirection == 1) {
     digitalWrite(controlPin1, HIGH);
     digitalWrite(controlPin2, LOW);
+    motorDirectionText = "Fwd: ";
   }
   else if (motorDirection == 0) {
     digitalWrite(controlPin1, LOW);
     digitalWrite(controlPin2, HIGH);
+    motorDirectionText = "Bck: ";
   }
+  
   
   if (motorEnabled == 1) {
     analogWrite(enablePin, motorSpeed);
@@ -104,14 +118,10 @@ void loop() {
   prevReverseSwitchState = reverseSwitchState;  
   prevMotorSpeed = motorSpeed;
 }
-void printLCD(int newMotorSpeed, int prevMotorSpeed) {
-  if (newMotorSpeed != prevMotorSpeed) {
-    delay(0);
+void printLCD(int newMotorSpeed, int prevMotorSpeed, String motorText) {
     lcd.setCursor(0,1);
     lcd.print("                ");
     lcd.setCursor(0,1);
+    lcd.print(motorText);
     lcd.print(newMotorSpeed);
-  }
 }
-
-
