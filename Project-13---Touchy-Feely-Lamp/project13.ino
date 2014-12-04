@@ -3,7 +3,7 @@
 CapacitiveSensor capSensor = CapacitiveSensor(4, 2);
 
 //sets up the threshold
-int threshold = 1000
+int threshold = 1000;
 const int ledPin = 12;
 
 void setup() {
