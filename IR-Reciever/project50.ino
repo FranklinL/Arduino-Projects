@@ -32,7 +32,7 @@ void pinOn(int pin)
   digitalWrite(pin, LOW);
 }
 
-void loop(0
+void loop()
 {
   if (irrecv.decode(&results))
   {
